@@ -1,0 +1,29 @@
+.grid-table {
+  border: 2px solid blue;
+  height: 550px;
+  width: 550px;
+  display: grid;
+  grid-template: repeat(16, 1fr) / repeat(16, 1fr);
+  color: red;
+}
+
+.table {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid red;
+  height: 100vh;
+}
+
+.square {
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid blue;
+}
+
+.true {
+  background-color: green;
+  color: white;
+}
