@@ -23,7 +23,7 @@ export default class Table extends Component {
     );
     // Incio de Loop con initialPositionX y initialPositionY establecidos
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 2; i++) {
       dirGrowthFiltered = this.dirGrowthFilterY(
         this.dirGrowthFilterX(dirGrowth, initialPositionX),
         initialPositionY
@@ -70,6 +70,7 @@ export default class Table extends Component {
       initialBody = body;
       console.log(body);
     }
+    return body;
   };
 
   dirGrowthFilterX(dirGrowth, initialPositionX) {
@@ -98,7 +99,10 @@ export default class Table extends Component {
   }
 
   componentDidMount() {
-    this.validateBody();
+    // console.log(` Desde componenteDidMount : ${this.validateBody()}`);
+    this.setState({
+      body: this.validateBody()
+    });
     // this.setState({
     //   direction : Math.floor(Math.random() * 4),
     // })
@@ -107,7 +111,7 @@ export default class Table extends Component {
   render() {
     var index = 0;
     var initialTable = [];
-    var valoresPrueba = ["4&5", "4&6", "4&7"];
+    // var valoresPrueba = ["4&5", "4&6", "4&7"];
     for (let x = 0; x < 16; x++) {
       for (let y = 0; y < 16; y++) {
         initialTable[index] = `${y}&${x}`;
@@ -116,7 +120,7 @@ export default class Table extends Component {
     }
     console.log(initialTable);
     var filteredTable = initialTable.map(item => (
-      <div className={`square ${valoresPrueba.includes(item).toString()}`}>
+      <div className={`square ${this.state.body.includes(item).toString()}`}>
         {item}{" "}
       </div>
     ));
