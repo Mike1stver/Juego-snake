@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import "./styles/table.css";
 
+let firstDirectionGrowth = 10;
+
 export default class Table extends Component {
   state = {
     direction: "",
@@ -30,26 +32,21 @@ export default class Table extends Component {
       );
       // A partir de un arreglo , obtiene una posicion aletoria hacia donde se elegira el siguiente bloque del cuerpo
 
-      switch (dirGrowthCurrent) {
-        case 0:
-          dirGrowthFiltered = dirGrowthFiltered.filter(num => num !== 2);
-          break;
-        case 2:
-          dirGrowthFiltered = dirGrowthFiltered.filter(num => num !== 0);
-          break;
-        case 1:
-          dirGrowthFiltered = dirGrowthFiltered.filter(num => num !== 3);
-          break;
-        case 3:
-          dirGrowthFiltered = dirGrowthFiltered.filter(num => num !== 1);
-          break;
-        default: // no se ejecutara
-      }
+      dirGrowthFiltered = this.deleteOpositeDirection(
+        dirGrowthCurrent,
+        dirGrowthFiltered
+      );
+
       console.log(dirGrowthFiltered);
       console.log(`Movimiento anterior: ${dirGrowthCurrent}`);
 
+      // Actualiza coordenada filtrada
       dirGrowthCurrent =
         dirGrowthFiltered[Math.floor(Math.random() * dirGrowthFiltered.length)];
+
+      i === 0 && (firstDirectionGrowth = dirGrowthCurrent);
+      // se guarda la primera direccion hacia done crecio para eliminar su opuesto como
+      //primera direccion hacia donde moverse
 
       dirGrowthCurrent === 3 && initialPositionX--;
       dirGrowthCurrent === 0 && initialPositionY--;
@@ -62,6 +59,7 @@ export default class Table extends Component {
       );
       // Luego de validarse
 
+      // Adjunta la nueva posicion al arreglo
       body = this.attachToBodyArray(
         initialBody,
         initialPositionX,
@@ -70,8 +68,23 @@ export default class Table extends Component {
       initialBody = body;
       console.log(body);
     }
+    console.log(
+      `La primera direccion hacia donde crecio fue ${firstDirectionGrowth}`
+    );
     return body;
   };
+
+  deleteOpositeDirection(direction, allowedDirection) {
+    direction === 0 &&
+      (allowedDirection = allowedDirection.filter(num => num !== 2));
+    direction === 2 &&
+      (allowedDirection = allowedDirection.filter(num => num !== 0));
+    direction === 1 &&
+      (allowedDirection = allowedDirection.filter(num => num !== 3));
+    direction === 3 &&
+      (allowedDirection = allowedDirection.filter(num => num !== 1));
+    return allowedDirection;
+  }
 
   dirGrowthFilterX(dirGrowth, initialPositionX) {
     switch (initialPositionX) {
@@ -98,11 +111,37 @@ export default class Table extends Component {
     return [...bodyArray, `${positionX.toString()}&${positionY.toString()}`];
   }
 
+  ///// Closure stage
+
+  validateClosure() {
+    var temp = this.outerFunction();
+    console.log(temp(2));
+    console.log(temp(2));
+    console.log(temp(2));
+    console.log(temp());
+    console.log(temp());
+  }
+
+  outerFunction() {
+    // let dirGrowth = [0, 1, 2, 3];
+    var count = 1;
+    function innerFunction(numero = 1) {
+      console.log(
+        `Hola Soy la funcion inner y count vale: ${count} , el prop es ${numero}`
+      );
+      count++;
+    }
+    return innerFunction;
+  }
+
   componentDidMount() {
     // console.log(` Desde componenteDidMount : ${this.validateBody()}`);
+
     this.setState({
       body: this.validateBody()
     });
+
+    // this.validateClosure();
     // this.setState({
     //   direction : Math.floor(Math.random() * 4),
     // })
