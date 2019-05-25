@@ -10,7 +10,6 @@ export default class Table extends Component {
   };
 
   validateBody = () => {
-    let dirGrowth = [0, 1, 2, 3]; // 0:arriba, 1:derecha, 2:abajo, 3: izquierda
     var dirGrowthFiltered = [];
     var dirGrowthCurrent = 10; // Guarda la direccion hacia donde crecera el snake
     var initialBody = ["12&14"]; // Acumulado de valores que cumplen con las restricciones
@@ -26,10 +25,10 @@ export default class Table extends Component {
     // Incio de Loop con initialPositionX y initialPositionY establecidos
 
     for (let i = 0; i < 2; i++) {
-      dirGrowthFiltered = this.dirGrowthFilterY(
-        this.dirGrowthFilterX(dirGrowth, initialPositionX),
-        initialPositionY
-      );
+      var X = this.closureFunction();
+      X(initialPositionX, 15, 0, 1, 3); // filtrado de X
+      dirGrowthFiltered = X(initialPositionY, 0, 15, 0, 2); // filtrado de Y
+
       // A partir de un arreglo , obtiene una posicion aletoria hacia donde se elegira el siguiente bloque del cuerpo
 
       dirGrowthFiltered = this.deleteOpositeDirection(
@@ -37,8 +36,8 @@ export default class Table extends Component {
         dirGrowthFiltered
       );
 
-      console.log(dirGrowthFiltered);
-      console.log(`Movimiento anterior: ${dirGrowthCurrent}`);
+      // console.log(dirGrowthFiltered);
+      // console.log(`Movimiento anterior: ${dirGrowthCurrent}`);
 
       // Actualiza coordenada filtrada
       dirGrowthCurrent =
@@ -53,10 +52,10 @@ export default class Table extends Component {
       dirGrowthCurrent === 1 && initialPositionX++;
       dirGrowthCurrent === 2 && initialPositionY++;
 
-      console.log(`Se movera hacia: ${dirGrowthCurrent}`);
-      console.log(
-        "Posicion Inicial: " + initialPositionX + " " + initialPositionY
-      );
+      // console.log(`Se movera hacia: ${dirGrowthCurrent}`);
+      // console.log(
+      //   "Posicion Inicial: " + initialPositionX + " " + initialPositionY
+      // );
       // Luego de validarse
 
       // Adjunta la nueva posicion al arreglo
@@ -66,45 +65,52 @@ export default class Table extends Component {
         initialPositionY
       );
       initialBody = body;
-      console.log(body);
+      // console.log(body);
     }
     console.log(
       `La primera direccion hacia donde crecio fue ${firstDirectionGrowth}`
     );
+
     return body;
   };
 
   deleteOpositeDirection(direction, allowedDirection) {
-    direction === 0 &&
-      (allowedDirection = allowedDirection.filter(num => num !== 2));
-    direction === 2 &&
-      (allowedDirection = allowedDirection.filter(num => num !== 0));
-    direction === 1 &&
-      (allowedDirection = allowedDirection.filter(num => num !== 3));
-    direction === 3 &&
-      (allowedDirection = allowedDirection.filter(num => num !== 1));
-    return allowedDirection;
+    switch (direction) {
+      case 0:
+        return allowedDirection.filter(num => num !== 2);
+      case 2:
+        return allowedDirection.filter(num => num !== 0);
+      case 1:
+        return allowedDirection.filter(num => num !== 3);
+      case 3:
+        return allowedDirection.filter(num => num !== 1);
+      default:
+        return allowedDirection;
+    }
   }
 
-  dirGrowthFilterX(dirGrowth, initialPositionX) {
-    switch (initialPositionX) {
-      case 15:
-        return dirGrowth.filter(num => num !== 1);
-      case 0:
-        return dirGrowth.filter(num => num !== 3);
-      default:
-        return dirGrowth;
+  closureFunction() {
+    let dirGrowth = [0, 1, 2, 3]; // 0:arriba, 1:derecha, 2:abajo, 3: izquierda
+
+    function filterDirection(
+      initialPosition,
+      valueCase1,
+      valueCase2,
+      directionDeleted1,
+      directionDeleted2
+    ) {
+      switch (initialPosition) {
+        case valueCase1:
+          dirGrowth = dirGrowth.filter(num => num !== directionDeleted1);
+          return dirGrowth;
+        case valueCase2:
+          dirGrowth = dirGrowth.filter(num => num !== directionDeleted2);
+          return dirGrowth;
+        default:
+          return dirGrowth;
+      }
     }
-  }
-  dirGrowthFilterY(dirGrowth, initialPositionY) {
-    switch (initialPositionY) {
-      case 0:
-        return dirGrowth.filter(num => num !== 0);
-      case 15:
-        return dirGrowth.filter(num => num !== 2);
-      default:
-        return dirGrowth;
-    }
+    return filterDirection;
   }
 
   attachToBodyArray(bodyArray, positionX, positionY) {
