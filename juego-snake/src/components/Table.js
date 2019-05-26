@@ -2,77 +2,109 @@ import React, { Component } from "react";
 import "./styles/table.css";
 
 let firstDirectionGrowth = 10;
+let initialPositionX, initialPositionY;
+let positionX, positionY;
+var index = 0;
+var initialTable = [];
+let addBlockForward = true;
 
 export default class Table extends Component {
   state = {
-    direction: "",
+    direction: 0,
     body: []
   };
 
   validateBody = () => {
-    var dirGrowthFiltered = [];
     var dirGrowthCurrent = 10; // Guarda la direccion hacia donde crecera el snake
-    var initialBody = ["12&14"]; // Acumulado de valores que cumplen con las restricciones
+    var initialBody = ["7&7"]; // Acumulado de valores que cumplen con las restricciones
     var body = [];
     // let initialDirection = Math.floor(Math.random() * 4);
     // let initialPositionX = Math.floor(Math.random() * 16);
 
-    let initialPositionX = 12;
-    let initialPositionY = 14;
+    initialPositionX = 7;
+    initialPositionY = 7;
+
     console.log(
       "Posicion Inicial: " + initialPositionX + " " + initialPositionY
     );
     // Incio de Loop con initialPositionX y initialPositionY establecidos
+    positionX = initialPositionX;
+    positionY = initialPositionY;
 
     for (let i = 0; i < 2; i++) {
-      var X = this.closureFunction();
-      X(initialPositionX, 15, 0, 1, 3); // filtrado de X
-      dirGrowthFiltered = X(initialPositionY, 0, 15, 0, 2); // filtrado de Y
-
-      // A partir de un arreglo , obtiene una posicion aletoria hacia donde se elegira el siguiente bloque del cuerpo
-
-      dirGrowthFiltered = this.deleteOpositeDirection(
-        dirGrowthCurrent,
-        dirGrowthFiltered
+      //Generacion de cada bloque del cuerpo inicial del snake
+      ///// Se obtiene la primera direccion a donde debe crecer el cuerpo [0,1,2,3]
+      dirGrowthCurrent = this.filterDirection(
+        positionX,
+        positionY,
+        dirGrowthCurrent
       );
-
-      // console.log(dirGrowthFiltered);
-      // console.log(`Movimiento anterior: ${dirGrowthCurrent}`);
-
-      // Actualiza coordenada filtrada
-      dirGrowthCurrent =
-        dirGrowthFiltered[Math.floor(Math.random() * dirGrowthFiltered.length)];
-
+      ////// Se guerda la primera direccion de crecimiento
       i === 0 && (firstDirectionGrowth = dirGrowthCurrent);
-      // se guarda la primera direccion hacia done crecio para eliminar su opuesto como
-      //primera direccion hacia donde moverse
+      /////Actualizacion de Coordenadas
 
-      dirGrowthCurrent === 3 && initialPositionX--;
-      dirGrowthCurrent === 0 && initialPositionY--;
-      dirGrowthCurrent === 1 && initialPositionX++;
-      dirGrowthCurrent === 2 && initialPositionY++;
-
-      // console.log(`Se movera hacia: ${dirGrowthCurrent}`);
-      // console.log(
-      //   "Posicion Inicial: " + initialPositionX + " " + initialPositionY
-      // );
-      // Luego de validarse
-
-      // Adjunta la nueva posicion al arreglo
-      body = this.attachToBodyArray(
-        initialBody,
-        initialPositionX,
-        initialPositionY
+      [positionX, positionY] = this.updatePosition(
+        dirGrowthCurrent,
+        positionX,
+        positionY
       );
+
+      ////// Adjunta la nueva posicion al cuerpo del snake
+      body = this.attachToBodyArray(initialBody, positionX, positionY);
       initialBody = body;
-      // console.log(body);
     }
-    console.log(
-      `La primera direccion hacia donde crecio fue ${firstDirectionGrowth}`
+
+    // Generacion de la direccion inicial del snake
+    ////// Se usa la primera direccion de crecimiento para eliminar su opuesto
+    firstDirectionGrowth === 0 && (dirGrowthCurrent = 2);
+    firstDirectionGrowth === 1 && (dirGrowthCurrent = 3);
+    firstDirectionGrowth === 2 && (dirGrowthCurrent = 0);
+    firstDirectionGrowth === 3 && (dirGrowthCurrent = 1);
+    ////// Filtrado de la direccion inicial de movimiento
+    dirGrowthCurrent = this.filterDirection(
+      initialPositionX,
+      initialPositionY,
+      dirGrowthCurrent
+    );
+    return [body, dirGrowthCurrent];
+  };
+
+  updatePosition(dirGrowthCurrent, positionX, positionY) {
+    switch (dirGrowthCurrent) {
+      case 3:
+        positionX--;
+        break;
+      case 0:
+        positionY--;
+        break;
+      case 1:
+        positionX++;
+        break;
+      case 2:
+        positionY++;
+        break;
+      default:
+    }
+    return [positionX, positionY];
+  }
+
+  filterDirection(initialPositionX, initialPositionY, lastDirection) {
+    var dirGrowthFiltered = [];
+    var X = this.closureFunction();
+
+    X(initialPositionX, 15, 0, 1, 3); // filtrado de X
+    dirGrowthFiltered = X(initialPositionY, 0, 15, 0, 2); // filtrado de Y
+
+    dirGrowthFiltered = this.deleteOpositeDirection(
+      lastDirection,
+      dirGrowthFiltered
     );
 
-    return body;
-  };
+    lastDirection =
+      dirGrowthFiltered[Math.floor(Math.random() * dirGrowthFiltered.length)];
+    console.log(`El ultimo valor de: ${dirGrowthFiltered}`);
+    return lastDirection;
+  }
 
   deleteOpositeDirection(direction, allowedDirection) {
     switch (direction) {
@@ -113,63 +145,87 @@ export default class Table extends Component {
     return filterDirection;
   }
 
-  attachToBodyArray(bodyArray, positionX, positionY) {
-    return [...bodyArray, `${positionX.toString()}&${positionY.toString()}`];
-  }
-
-  ///// Closure stage
-
-  validateClosure() {
-    var temp = this.outerFunction();
-    console.log(temp(2));
-    console.log(temp(2));
-    console.log(temp(2));
-    console.log(temp());
-    console.log(temp());
-  }
-
-  outerFunction() {
-    // let dirGrowth = [0, 1, 2, 3];
-    var count = 1;
-    function innerFunction(numero = 1) {
-      console.log(
-        `Hola Soy la funcion inner y count vale: ${count} , el prop es ${numero}`
-      );
-      count++;
-    }
-    return innerFunction;
+  attachToBodyArray(bodyArray, positionX, positionY, addBlockForward = false) {
+    return addBlockForward
+      ? [`${positionX.toString()}&${positionY.toString()}`, ...bodyArray].slice(
+          0,
+          bodyArray.length
+        )
+      : [...bodyArray, `${positionX.toString()}&${positionY.toString()}`];
   }
 
   componentDidMount() {
-    // console.log(` Desde componenteDidMount : ${this.validateBody()}`);
+    let [body, direction] = this.validateBody();
+    this.setState({
+      body,
+      direction
+    });
+    console.log(`Su primer movimieto sera hacia: ${direction}`);
+
+    setInterval(() => {
+      this.timeOutHandler();
+    }, 100);
+
+    document.addEventListener("keydown", this.keyDownHandler);
+  }
+
+  keyDownHandler = ({ key }) => {
+    console.log("Se presiono");
+    console.log(key);
+    this.setState({
+      direction: this.convertKeytoDirection(key)
+    });
+  };
+
+  convertKeytoDirection(key) {
+    let direction;
+    key === "ArrowUp" && (direction = 0);
+    key === "ArrowRight" && (direction = 1);
+    key === "ArrowDown" && (direction = 2);
+    key === "ArrowLeft" && (direction = 3);
+    return direction;
+  }
+
+  timeOutHandler() {
+    var { direction, body } = this.state;
+    [initialPositionX, initialPositionY] = this.updatePosition(
+      direction,
+      initialPositionX,
+      initialPositionY
+    );
 
     this.setState({
-      body: this.validateBody()
+      body: this.attachToBodyArray(
+        body,
+        initialPositionX,
+        initialPositionY,
+        addBlockForward
+      )
     });
-
-    // this.validateClosure();
-    // this.setState({
-    //   direction : Math.floor(Math.random() * 4),
-    // })
   }
 
   render() {
-    var index = 0;
-    var initialTable = [];
-    // var valoresPrueba = ["4&5", "4&6", "4&7"];
+    // var index = 0;
+    // var initialTable = [];
+    index = 0;
+    initialTable = [];
     for (let x = 0; x < 16; x++) {
       for (let y = 0; y < 16; y++) {
         initialTable[index] = `${y}&${x}`;
         index++;
       }
     }
-    console.log(initialTable);
+    // console.log(initialTable);
     var filteredTable = initialTable.map(item => (
-      <div className={`square ${this.state.body.includes(item).toString()}`}>
+      <div
+        className={`square ${this.state.body.includes(item).toString()} ${
+          this.state.body[0] === item ? "initial" : ""
+        }`}
+      >
         {item}{" "}
       </div>
     ));
-    console.log(filteredTable);
+    // console.log(filte  redTable);
 
     return (
       <div className="table">
