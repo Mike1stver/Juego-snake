@@ -4,15 +4,16 @@
   width: 550px;
   display: grid;
   grid-template: repeat(16, 1fr) / repeat(16, 1fr);
-  color: red;
+  color: white;
 }
 
 .table {
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid red;
+  /* border: 1px solid rgba(0, 60, 88, 0.788); */
   height: 100vh;
+  /* margin: 0 350px; */
 }
 
 .square {

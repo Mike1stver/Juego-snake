@@ -18,7 +18,7 @@ export default class Table extends Component {
     var dirGrowthCurrent = 10; // Guarda la direccion hacia donde crecera el snake
     var initialBody = ["7&7"]; // Acumulado de valores que cumplen con las restricciones
     var body = [];
-    // let initialDirection = Math.floor(Math.random() * 4);
+    // let initialDirection = Math.floor(Math.random() * 16);
     // let initialPositionX = Math.floor(Math.random() * 16);
 
     initialPositionX = 7;
@@ -164,9 +164,34 @@ export default class Table extends Component {
 
     setInterval(() => {
       this.timeOutHandler();
-    }, 100);
+    }, 200); // A mayor valorm mayor velocidad y mayor dificultad
 
     document.addEventListener("keydown", this.keyDownHandler);
+
+    var updatedTable = initialTable.map(item => {
+      return body.includes(item) ? "filled" : item;
+    });
+
+    let match = true;
+    let foodIndex;
+    while (match) {
+      foodIndex = Math.floor(Math.random() * updatedTable.length);
+      console.log(`intentos ${updatedTable[foodIndex]}`);
+      updatedTable[foodIndex] === "filled" ? (match = true) : (match = false);
+    }
+    console.log(`La comida se encuentra en ${updatedTable[foodIndex]}`);
+    console.log(`El cuerpo inicial del snake esta en ${body}`);
+
+    // Generar de manera aleatoria la posicion de la comida, eliminando los campos que tienen fill
+    // obtener el col&fila y en el render hacer un if haciendo que pinte la casilla
+
+    // esta operacion se debe repetir en el componentedidupdate
+    // por loq eu seria bueno hacer una funcion
+
+    // en el componentedidupdate se debe analizar si se comio el alimento, si lo hizo, entonces ejecutar
+    // la funcion que genera la posicion aleatoria de la comida.
+
+    // console.log(updatedTable);
   }
 
   keyDownHandler = ({ key }) => {
@@ -205,8 +230,6 @@ export default class Table extends Component {
   }
 
   render() {
-    // var index = 0;
-    // var initialTable = [];
     index = 0;
     initialTable = [];
     for (let x = 0; x < 16; x++) {
@@ -215,7 +238,6 @@ export default class Table extends Component {
         index++;
       }
     }
-    // console.log(initialTable);
     var filteredTable = initialTable.map(item => (
       <div
         className={`square ${this.state.body.includes(item).toString()} ${
@@ -225,7 +247,6 @@ export default class Table extends Component {
         {item}{" "}
       </div>
     ));
-    // console.log(filte  redTable);
 
     return (
       <div className="table">
