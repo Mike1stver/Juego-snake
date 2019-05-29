@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/Juego-snake/static/css/main.045ea28b.chunk.css",
+    "main.js": "/Juego-snake/static/js/main.065f80a4.chunk.js",
+    "main.js.map": "/Juego-snake/static/js/main.065f80a4.chunk.js.map",
+    "runtime~main.js": "/Juego-snake/static/js/runtime~main.29c7db51.js",
+    "runtime~main.js.map": "/Juego-snake/static/js/runtime~main.29c7db51.js.map",
+    "static/js/2.b62a2150.chunk.js": "/Juego-snake/static/js/2.b62a2150.chunk.js",
+    "static/js/2.b62a2150.chunk.js.map": "/Juego-snake/static/js/2.b62a2150.chunk.js.map",
+    "index.html": "/Juego-snake/index.html",
+    "precache-manifest.336cb719d094b9f1fa66c45f6ddefad7.js": "/Juego-snake/precache-manifest.336cb719d094b9f1fa66c45f6ddefad7.js",
+    "service-worker.js": "/Juego-snake/service-worker.js",
+    "static/css/main.045ea28b.chunk.css.map": "/Juego-snake/static/css/main.045ea28b.chunk.css.map"
+  }
+}
