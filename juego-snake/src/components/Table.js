@@ -7,11 +7,13 @@ let positionX, positionY;
 var index = 0;
 var initialTable = [];
 let addBlockForward = true;
+let foodPosition;
 
 export default class Table extends Component {
   state = {
     direction: 0,
-    body: []
+    body: [],
+    food: ""
   };
 
   validateBody = () => {
@@ -168,22 +170,13 @@ export default class Table extends Component {
 
     document.addEventListener("keydown", this.keyDownHandler);
 
+    // UpdatedTable contiene llenos con fills, los campos donde se enceuntra el snake
     var updatedTable = initialTable.map(item => {
       return body.includes(item) ? "filled" : item;
     });
 
-    let match = true;
-    let foodIndex;
-    while (match) {
-      foodIndex = Math.floor(Math.random() * updatedTable.length);
-      console.log(`intentos ${updatedTable[foodIndex]}`);
-      updatedTable[foodIndex] === "filled" ? (match = true) : (match = false);
-    }
-    console.log(`La comida se encuentra en ${updatedTable[foodIndex]}`);
+    this.getNewFood(updatedTable);
     console.log(`El cuerpo inicial del snake esta en ${body}`);
-
-    // Generar de manera aleatoria la posicion de la comida, eliminando los campos que tienen fill
-    // obtener el col&fila y en el render hacer un if haciendo que pinte la casilla
 
     // esta operacion se debe repetir en el componentedidupdate
     // por loq eu seria bueno hacer una funcion
@@ -193,6 +186,23 @@ export default class Table extends Component {
 
     // console.log(updatedTable);
   }
+
+  getNewFood = updatedTable => {
+    let match = true;
+    let foodIndex;
+    while (match) {
+      foodIndex = Math.floor(Math.random() * updatedTable.length);
+      console.log(`intentos ${updatedTable[foodIndex]}`);
+      updatedTable[foodIndex] === "filled" ? (match = true) : (match = false);
+    }
+    console.log("Se creo la comida");
+    console.log(`La comida se encuentra en ${updatedTable[foodIndex]}`);
+
+    this.setState({
+      food: updatedTable[foodIndex]
+    });
+    // return updatedTable[foodIndex];
+  };
 
   keyDownHandler = ({ key }) => {
     console.log("Se presiono");
@@ -242,7 +252,7 @@ export default class Table extends Component {
       <div
         className={`square ${this.state.body.includes(item).toString()} ${
           this.state.body[0] === item ? "initial" : ""
-        }`}
+        } ${this.state.food === item ? "food" : ""}`}
       >
         {item}{" "}
       </div>
