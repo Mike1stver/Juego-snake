@@ -174,12 +174,9 @@ export default class Table extends Component {
     var updatedTable = initialTable.map(item => {
       return body.includes(item) ? "filled" : item;
     });
-
+    // Se genera una posicion aleatoria para la comida
     this.getNewFood(updatedTable);
     console.log(`El cuerpo inicial del snake esta en ${body}`);
-
-    // esta operacion se debe repetir en el componentedidupdate
-    // por loq eu seria bueno hacer una funcion
 
     // en el componentedidupdate se debe analizar si se comio el alimento, si lo hizo, entonces ejecutar
     // la funcion que genera la posicion aleatoria de la comida.
@@ -187,12 +184,20 @@ export default class Table extends Component {
     // console.log(updatedTable);
   }
 
+  // Cada vez que se la cabeza se iguala con la posicion del alimento, se tiene que actualizar el snake
+  // Y llamar a la funcion que crea una nueva comida, considerando que el cuerpo ha crecido
+  componentDidUpdate = () => {
+    if (this.state.food === this.state.body[0]) {
+      console.log("match");
+    }
+  };
+
   getNewFood = updatedTable => {
     let match = true;
     let foodIndex;
     while (match) {
       foodIndex = Math.floor(Math.random() * updatedTable.length);
-      console.log(`intentos ${updatedTable[foodIndex]}`);
+      // console.log(`intentos ${updatedTable[foodIndex]}`);
       updatedTable[foodIndex] === "filled" ? (match = true) : (match = false);
     }
     console.log("Se creo la comida");
@@ -201,12 +206,11 @@ export default class Table extends Component {
     this.setState({
       food: updatedTable[foodIndex]
     });
-    // return updatedTable[foodIndex];
   };
 
   keyDownHandler = ({ key }) => {
-    console.log("Se presiono");
-    console.log(key);
+    // console.log("Se presiono");
+    // console.log(key);
     this.setState({
       direction: this.convertKeytoDirection(key)
     });
