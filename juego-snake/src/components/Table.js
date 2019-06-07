@@ -6,8 +6,6 @@ let initialPositionX, initialPositionY;
 let positionX, positionY;
 var index = 0;
 var initialTable = [];
-let addBlockForward = true;
-let foodPosition;
 
 export default class Table extends Component {
   state = {
@@ -52,7 +50,7 @@ export default class Table extends Component {
       );
 
       ////// Adjunta la nueva posicion al cuerpo del snake
-      body = this.attachToBodyArray(initialBody, positionX, positionY);
+      body = this.attachToBodyArray(initialBody, positionX, positionY, "back");
       initialBody = body;
     }
 
@@ -147,13 +145,26 @@ export default class Table extends Component {
     return filterDirection;
   }
 
-  attachToBodyArray(bodyArray, positionX, positionY, addBlockForward = false) {
-    return addBlockForward
-      ? [`${positionX.toString()}&${positionY.toString()}`, ...bodyArray].slice(
-          0,
-          bodyArray.length
-        )
-      : [...bodyArray, `${positionX.toString()}&${positionY.toString()}`];
+  attachToBodyArray(bodyArray, positionX, positionY, addBlock) {
+    switch (addBlock) {
+      case "front":
+        return [
+          `${positionX.toString()}&${positionY.toString()}`,
+          ...bodyArray
+        ].slice(0, bodyArray.length);
+      case "back":
+        return [
+          ...bodyArray,
+          `${positionX.toString()}&${positionY.toString()}`
+        ];
+      case "growth":
+        return [
+          `${positionX.toString()}&${positionY.toString()}`,
+          ...bodyArray
+        ].slice(0, bodyArray.length + 1);
+      default:
+        break;
+    }
   }
 
   componentDidMount() {
@@ -169,19 +180,7 @@ export default class Table extends Component {
     }, 200); // A mayor valorm mayor velocidad y mayor dificultad
 
     document.addEventListener("keydown", this.keyDownHandler);
-
-    // UpdatedTable contiene llenos con fills, los campos donde se enceuntra el snake
-    var updatedTable = initialTable.map(item => {
-      return body.includes(item) ? "filled" : item;
-    });
-    // Se genera una posicion aleatoria para la comida
-    this.getNewFood(updatedTable);
-    console.log(`El cuerpo inicial del snake esta en ${body}`);
-
-    // en el componentedidupdate se debe analizar si se comio el alimento, si lo hizo, entonces ejecutar
-    // la funcion que genera la posicion aleatoria de la comida.
-
-    // console.log(updatedTable);
+    this.getNewFood();
   }
 
   // Cada vez que se la cabeza se iguala con la posicion del alimento, se tiene que actualizar el snake
@@ -189,15 +188,29 @@ export default class Table extends Component {
   componentDidUpdate = () => {
     if (this.state.food === this.state.body[0]) {
       console.log("match");
+      this.setState({
+        body: this.attachToBodyArray(
+          this.state.body,
+          initialPositionX,
+          initialPositionY,
+          "growth"
+        )
+      });
+      this.getNewFood();
     }
   };
 
-  getNewFood = updatedTable => {
+  // Se genera una posicion aleatoria para la comida
+  getNewFood = () => {
     let match = true;
     let foodIndex;
+    let { body } = this.state;
+    var updatedTable = initialTable.map(item => {
+      return body.includes(item) ? "filled" : item;
+    });
+
     while (match) {
       foodIndex = Math.floor(Math.random() * updatedTable.length);
-      // console.log(`intentos ${updatedTable[foodIndex]}`);
       updatedTable[foodIndex] === "filled" ? (match = true) : (match = false);
     }
     console.log("Se creo la comida");
@@ -209,8 +222,6 @@ export default class Table extends Component {
   };
 
   keyDownHandler = ({ key }) => {
-    // console.log("Se presiono");
-    // console.log(key);
     this.setState({
       direction: this.convertKeytoDirection(key)
     });
@@ -238,7 +249,7 @@ export default class Table extends Component {
         body,
         initialPositionX,
         initialPositionY,
-        addBlockForward
+        "front"
       )
     });
   }
