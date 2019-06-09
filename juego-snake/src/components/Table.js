@@ -1,17 +1,49 @@
 import React, { Component } from "react";
 import "./styles/table.css";
+import WelcomeModal from "./WelcomeModal";
+import GameOverModal from "./GameOverModal";
 
 let firstDirectionGrowth = 10;
 let initialPositionX, initialPositionY;
 let positionX, positionY;
 var index = 0;
 var initialTable = [];
+for (let y = 0; y < 16; y++) {
+  for (let x = 0; x < 16; x++) {
+    initialTable[index] = `${x}&${y}`;
+    index++;
+  }
+}
+
+index = 0;
+var lostTable = [];
+
+for (let y = 0; y < 16; y++) {
+  lostTable[index] = `-1&${y}`;
+  index++;
+}
+for (let y = 0; y < 16; y++) {
+  lostTable[index] = `16&${y}`;
+  index++;
+}
+for (let x = 0; x < 16; x++) {
+  lostTable[index] = `${x}&-1`;
+  index++;
+}
+for (let x = 0; x < 16; x++) {
+  lostTable[index] = `${x}&16`;
+  index++;
+}
+
+console.log(lostTable);
 
 export default class Table extends Component {
   state = {
     direction: 0,
     body: [],
-    food: ""
+    food: "",
+    lost: false,
+    gameStarted: false
   };
 
   validateBody = () => {
@@ -146,22 +178,15 @@ export default class Table extends Component {
   }
 
   attachToBodyArray(bodyArray, positionX, positionY, addBlock) {
+    let XYCoordinate = `${positionX.toString()}&${positionY.toString()}`;
+
     switch (addBlock) {
       case "front":
-        return [
-          `${positionX.toString()}&${positionY.toString()}`,
-          ...bodyArray
-        ].slice(0, bodyArray.length);
+        return [XYCoordinate, ...bodyArray].slice(0, bodyArray.length);
       case "back":
-        return [
-          ...bodyArray,
-          `${positionX.toString()}&${positionY.toString()}`
-        ];
+        return [...bodyArray, XYCoordinate];
       case "growth":
-        return [
-          `${positionX.toString()}&${positionY.toString()}`,
-          ...bodyArray
-        ].slice(0, bodyArray.length + 1);
+        return [XYCoordinate, ...bodyArray].slice(0, bodyArray.length + 1);
       default:
         break;
     }
@@ -175,9 +200,11 @@ export default class Table extends Component {
     });
     console.log(`Su primer movimieto sera hacia: ${direction}`);
 
-    setInterval(() => {
+    this.timerID = setInterval(() => {
       this.timeOutHandler();
-    }, 200); // A mayor valorm mayor velocidad y mayor dificultad
+    }, 600);
+
+    // A mayor valorm mayor velocidad y mayor dificultad
 
     document.addEventListener("keydown", this.keyDownHandler);
     this.getNewFood();
@@ -186,6 +213,8 @@ export default class Table extends Component {
   // Cada vez que se la cabeza se iguala con la posicion del alimento, se tiene que actualizar el snake
   // Y llamar a la funcion que crea una nueva comida, considerando que el cuerpo ha crecido
   componentDidUpdate = () => {
+    //Verificar si perdio
+
     if (this.state.food === this.state.body[0]) {
       console.log("match");
       this.setState({
@@ -222,9 +251,14 @@ export default class Table extends Component {
   };
 
   keyDownHandler = ({ key }) => {
-    this.setState({
-      direction: this.convertKeytoDirection(key)
-    });
+    let posibleDirection = this.convertKeytoDirection(key);
+
+    this.deleteOpositeDirection(this.state.direction, [0, 1, 2, 3]).includes(
+      posibleDirection
+    ) &&
+      this.setState({
+        direction: this.convertKeytoDirection(key)
+      });
   };
 
   convertKeytoDirection(key) {
@@ -237,32 +271,57 @@ export default class Table extends Component {
   }
 
   timeOutHandler() {
-    var { direction, body } = this.state;
-    [initialPositionX, initialPositionY] = this.updatePosition(
-      direction,
-      initialPositionX,
-      initialPositionY
-    );
+    if (this.state.gameStarted) {
+      var { direction, body } = this.state;
 
-    this.setState({
-      body: this.attachToBodyArray(
-        body,
+      [initialPositionX, initialPositionY] = this.updatePosition(
+        direction,
         initialPositionX,
-        initialPositionY,
-        "front"
-      )
-    });
+        initialPositionY
+      );
+
+      if (
+        body.includes(
+          `${initialPositionX.toString()}&${initialPositionY.toString()}`
+        )
+      ) {
+        console.log("choco con su propio cuerpo");
+        clearInterval(this.timerID);
+        this.setState({
+          lost: true
+        });
+      }
+
+      if (
+        lostTable.includes(
+          `${initialPositionX.toString()}&${initialPositionY.toString()}`
+        )
+      ) {
+        console.log("choco las paredes");
+        clearInterval(this.timerID);
+        this.setState({
+          lost: true
+        });
+      }
+
+      this.setState({
+        body: this.attachToBodyArray(
+          body,
+          initialPositionX,
+          initialPositionY,
+          "front"
+        )
+      });
+    }
   }
 
+  onStartHandler = () => {
+    this.setState({
+      gameStarted: true
+    });
+  };
+
   render() {
-    index = 0;
-    initialTable = [];
-    for (let x = 0; x < 16; x++) {
-      for (let y = 0; y < 16; y++) {
-        initialTable[index] = `${y}&${x}`;
-        index++;
-      }
-    }
     var filteredTable = initialTable.map(item => (
       <div
         className={`square ${this.state.body.includes(item).toString()} ${
@@ -274,9 +333,22 @@ export default class Table extends Component {
     ));
 
     return (
-      <div className="table">
-        <div className="grid-table">{filteredTable}</div>
-      </div>
+      <React.Fragment>
+        <div className="table">
+          <div className="grid-table">{filteredTable}</div>
+        </div>
+        {!this.state.gameStarted && (
+          <WelcomeModal gameStarted={this.onStartHandler} />
+        )}
+        {this.state.lost && <GameOverModal />}
+      </React.Fragment>
     );
   }
 }
+
+//Siguientes pasos:
+
+// Corregir el bug del presionado rapido de teclas y que hace que se vaya en sentido opuesot
+// generacion aleatoria de posicon inicial y filtrado tomando en cuenta los bordes.
+// Creacion de compomente Juego, que permita reiniciar el tablero y llevar la cuenta de los puntos.
+// Levatantar los estados hacia el componente juego.

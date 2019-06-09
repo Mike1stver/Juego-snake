@@ -1,0 +1,25 @@
+.WelcomeModal-title {
+  width: 100%;
+  font-size: 24px;
+  color: #6574cd;
+  font-weight: 900;
+  margin-bottom: 5%;
+}
+
+.welcomemodal-button {
+  padding: 10px;
+  width: 158px;
+  height: 58px;
+
+  border-radius: 5px;
+  color: white;
+  transition: all 0.5s ease-in-out;
+  cursor: pointer;
+  background-color: #6574cd;
+  border: 1px solid #6574cd;
+}
+
+.welcomemodal-button:hover {
+  background: transparent;
+  color: #6574cd;
+}
