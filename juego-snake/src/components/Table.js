@@ -8,6 +8,7 @@ let initialPositionX, initialPositionY;
 let positionX, positionY;
 var index = 0;
 var initialTable = [];
+let score = 0;
 for (let y = 0; y < 16; y++) {
   for (let x = 0; x < 16; x++) {
     initialTable[index] = `${x}&${y}`;
@@ -43,7 +44,8 @@ export default class Table extends Component {
     body: [],
     food: "",
     lost: false,
-    gameStarted: false
+    gameStarted: false,
+    scores: []
   };
 
   validateBody = () => {
@@ -217,6 +219,7 @@ export default class Table extends Component {
 
     if (this.state.food === this.state.body[0]) {
       console.log("match");
+      score++;
       this.setState({
         body: this.attachToBodyArray(
           this.state.body,
@@ -288,7 +291,8 @@ export default class Table extends Component {
         console.log("choco con su propio cuerpo");
         clearInterval(this.timerID);
         this.setState({
-          lost: true
+          lost: true,
+          scores: [...this.state.scores, this.state.score]
         });
       }
 
@@ -300,7 +304,8 @@ export default class Table extends Component {
         console.log("choco las paredes");
         clearInterval(this.timerID);
         this.setState({
-          lost: true
+          lost: true,
+          scores: [...this.state.scores, this.state.score]
         });
       }
 
@@ -319,6 +324,24 @@ export default class Table extends Component {
     this.setState({
       gameStarted: true
     });
+  };
+
+  onFinishedHandler = () => {
+    console.log(" Miguel Perdio!!!");
+    score = 0;
+    let [body, direction] = this.validateBody();
+
+    this.timerID = setInterval(() => {
+      this.timeOutHandler();
+    }, 600);
+
+    this.setState({
+      body,
+      direction,
+      lost: false,
+      food: ""
+    });
+    this.getNewFood();
   };
 
   render() {
@@ -340,7 +363,13 @@ export default class Table extends Component {
         {!this.state.gameStarted && (
           <WelcomeModal gameStarted={this.onStartHandler} />
         )}
-        {this.state.lost && <GameOverModal />}
+        {this.state.lost && (
+          <GameOverModal
+            score={score}
+            gameFinished={this.onFinishedHandler}
+            scores={this.state.scores}
+          />
+        )}
       </React.Fragment>
     );
   }
