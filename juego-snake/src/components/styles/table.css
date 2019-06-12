@@ -13,10 +13,12 @@
   align-items: center;
   /* border: 1px solid rgba(0, 60, 88, 0.788); */
   height: 100vh;
+  /* position: relative; */
   /* margin: 0 350px; */
 }
 
 .square {
+  background-color: beige;
   font-size: 10px;
   display: flex;
   align-items: center;
@@ -26,7 +28,7 @@
 }
 
 .true {
-  background-color: #9f7267;
+  background-color: #189952;
   color: white;
 }
 .initial {

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./styles/table.css";
 import WelcomeModal from "./WelcomeModal";
 import GameOverModal from "./GameOverModal";
+import RecordModal from "./RecordModal";
 
 let firstDirectionGrowth = 10;
 let initialPositionX, initialPositionY;
@@ -45,6 +46,7 @@ export default class Table extends Component {
     food: "",
     lost: false,
     gameStarted: false,
+    showRecord: false,
     scores: []
   };
 
@@ -292,7 +294,7 @@ export default class Table extends Component {
         clearInterval(this.timerID);
         this.setState({
           lost: true,
-          scores: [...this.state.scores, this.state.score]
+          scores: [...this.state.scores, score]
         });
       }
 
@@ -305,7 +307,7 @@ export default class Table extends Component {
         clearInterval(this.timerID);
         this.setState({
           lost: true,
-          scores: [...this.state.scores, this.state.score]
+          scores: [...this.state.scores, score]
         });
       }
 
@@ -344,6 +346,13 @@ export default class Table extends Component {
     this.getNewFood();
   };
 
+  onShowRecordHandler = () => {
+    this.setState({
+      showRecord: true
+    });
+    console.log("presiono ver record");
+  };
+
   render() {
     var filteredTable = initialTable.map(item => (
       <div
@@ -368,8 +377,10 @@ export default class Table extends Component {
             score={score}
             gameFinished={this.onFinishedHandler}
             scores={this.state.scores}
+            showRecord={this.onShowRecordHandler}
           />
         )}
+        {this.state.showRecord && <RecordModal scores={this.state.scores} />}
       </React.Fragment>
     );
   }
@@ -379,5 +390,4 @@ export default class Table extends Component {
 
 // Corregir el bug del presionado rapido de teclas y que hace que se vaya en sentido opuesot
 // generacion aleatoria de posicon inicial y filtrado tomando en cuenta los bordes.
-// Creacion de compomente Juego, que permita reiniciar el tablero y llevar la cuenta de los puntos.
-// Levatantar los estados hacia el componente juego.
+// Crear componente Button y agregar boton en el modalgmeover para ver el record de puntos

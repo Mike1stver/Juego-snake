@@ -1,9 +1,9 @@
 import React from "react";
 
-function Button({ onClick, message }) {
+function Button({ onClick, message, color }) {
   return (
     <button
-      className="welcomemodal-button"
+      className={`Button ${color}`}
       onClick={() => {
         onClick();
       }}
