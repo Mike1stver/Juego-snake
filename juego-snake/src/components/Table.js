@@ -4,6 +4,8 @@ import WelcomeModal from "./WelcomeModal";
 import GameOverModal from "./GameOverModal";
 import RecordModal from "./RecordModal";
 
+const SPEED = 150; //Reverse, the lower, the faster
+let temporaryDiretion;
 let firstDirectionGrowth = 10;
 let initialPositionX, initialPositionY;
 let positionX, positionY;
@@ -198,6 +200,7 @@ export default class Table extends Component {
 
   componentDidMount() {
     let [body, direction] = this.validateBody();
+    temporaryDiretion = direction;
     this.setState({
       body,
       direction
@@ -206,7 +209,7 @@ export default class Table extends Component {
 
     this.timerID = setInterval(() => {
       this.timeOutHandler();
-    }, 600);
+    }, SPEED);
 
     // A mayor valorm mayor velocidad y mayor dificultad
 
@@ -261,9 +264,10 @@ export default class Table extends Component {
     this.deleteOpositeDirection(this.state.direction, [0, 1, 2, 3]).includes(
       posibleDirection
     ) &&
-      this.setState({
-        direction: this.convertKeytoDirection(key)
-      });
+      // this.setState({
+      //   direction: this.convertKeytoDirection(key)
+      // });
+      (temporaryDiretion = posibleDirection);
   };
 
   convertKeytoDirection(key) {
@@ -277,10 +281,11 @@ export default class Table extends Component {
 
   timeOutHandler() {
     if (this.state.gameStarted) {
-      var { direction, body } = this.state;
+      // var { direction, body } = this.state;
+      var { body } = this.state;
 
       [initialPositionX, initialPositionY] = this.updatePosition(
-        direction,
+        temporaryDiretion,
         initialPositionX,
         initialPositionY
       );
@@ -317,7 +322,8 @@ export default class Table extends Component {
           initialPositionX,
           initialPositionY,
           "front"
-        )
+        ),
+        direction: temporaryDiretion
       });
     }
   }
@@ -333,13 +339,15 @@ export default class Table extends Component {
     score = 0;
     let [body, direction] = this.validateBody();
 
+    temporaryDiretion = direction;
+
     this.timerID = setInterval(() => {
       this.timeOutHandler();
-    }, 600);
+    }, SPEED);
 
     this.setState({
       body,
-      direction,
+      temporaryDiretion,
       lost: false,
       food: ""
     });
