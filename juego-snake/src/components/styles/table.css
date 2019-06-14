@@ -1,10 +1,11 @@
 .grid-table {
-  border: 2px solid blue;
+  /* border: 8px solid blue; */
   height: 550px;
   width: 550px;
   display: grid;
   grid-template: repeat(16, 1fr) / repeat(16, 1fr);
-  color: white;
+  color: transparent;
+  border-radius: 8px;
 }
 
 .table {
@@ -18,22 +19,26 @@
 }
 
 .square {
+  border-radius: 8px;
   background-color: beige;
   font-size: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid blue;
+  border: 1px solid #db0017;
   /* transition: all 0.3s ease-in-out; */
 }
 
 .true {
   background-color: #189952;
   color: white;
+  color: transparent;
 }
 .initial {
-  background-color: black;
+  background-color: #0d297e;
+  color: transparent;
 }
 .food {
+  color: transparent;
   background-color: red;
 }

@@ -54,13 +54,13 @@ export default class Table extends Component {
 
   validateBody = () => {
     var dirGrowthCurrent = 10; // Guarda la direccion hacia donde crecera el snake
-    var initialBody = ["7&7"]; // Acumulado de valores que cumplen con las restricciones
     var body = [];
-    // let initialDirection = Math.floor(Math.random() * 16);
-    // let initialPositionX = Math.floor(Math.random() * 16);
+    initialPositionY = Math.floor(Math.random() * 16);
+    initialPositionX = Math.floor(Math.random() * 16);
 
-    initialPositionX = 7;
-    initialPositionY = 7;
+    var initialBody = [
+      `${initialPositionX.toString()}&${initialPositionY.toString()}`
+    ];
 
     console.log(
       "Posicion Inicial: " + initialPositionX + " " + initialPositionY
@@ -211,8 +211,6 @@ export default class Table extends Component {
       this.timeOutHandler();
     }, SPEED);
 
-    // A mayor valorm mayor velocidad y mayor dificultad
-
     document.addEventListener("keydown", this.keyDownHandler);
     this.getNewFood();
   }
@@ -263,11 +261,7 @@ export default class Table extends Component {
 
     this.deleteOpositeDirection(this.state.direction, [0, 1, 2, 3]).includes(
       posibleDirection
-    ) &&
-      // this.setState({
-      //   direction: this.convertKeytoDirection(key)
-      // });
-      (temporaryDiretion = posibleDirection);
+    ) && (temporaryDiretion = posibleDirection);
   };
 
   convertKeytoDirection(key) {
@@ -281,7 +275,6 @@ export default class Table extends Component {
 
   timeOutHandler() {
     if (this.state.gameStarted) {
-      // var { direction, body } = this.state;
       var { body } = this.state;
 
       [initialPositionX, initialPositionY] = this.updatePosition(
@@ -396,6 +389,4 @@ export default class Table extends Component {
 
 //Siguientes pasos:
 
-// Corregir el bug del presionado rapido de teclas y que hace que se vaya en sentido opuesot
-// generacion aleatoria de posicon inicial y filtrado tomando en cuenta los bordes.
 // Crear componente Button y agregar boton en el modalgmeover para ver el record de puntos
