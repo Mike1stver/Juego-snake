@@ -9,7 +9,10 @@ function GameOverModal({ gameFinished, score, showRecord }) {
     <Modal>
       <div className="GameOverModal-modal-box">
         <h1 className="GameOverModal-title">Perdiste!!! :( </h1>
-        <h1 className="GameOverModal-subTitle">Obtuviste {score} puntos!!</h1>
+        <h1 className="GameOverModal-subTitle">
+          {" "}
+          {`Obtuviste ${score} ${score === 1 ? "punto" : "puntos"}`}{" "}
+        </h1>
         <Button
           color="strong-blue"
           message="Juega Otra vez!"

@@ -1,20 +1,48 @@
 .RecordModal-modal-box {
   z-index: 3;
   position: fixed;
-  bottom: 0;
-  top: 0;
   background-color: white;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   text-align: center;
-  width: 60%;
-  padding: 1.2%;
+  width: 50%;
+  padding-bottom: 21px;
   border: 1px solid #0c8bad;
+}
+
+.close-icon {
+  position: absolute;
+  right: 7px;
+  top: 7px;
+  cursor: pointer;
+}
+
+.close-icon .fa-times {
+  width: 20px;
+  height: 20px;
 }
 
 .position-table {
   color: #0d287e;
+  font-size: 25px;
   width: 100%;
   margin-bottom: 3%;
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid #b1b1b1;
+  padding-bottom: 3px;
+}
+
+ul {
+  text-align: center;
+  padding: 0;
+  width: 100%;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  font-size: 19px;
+}
+
+ul:nth-of-type(2n + 1) {
+  background-color: #14b56330;
 }

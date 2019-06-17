@@ -1,12 +1,19 @@
 import React from "react";
 import "./styles/recordmodal.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
-function RecordModal({ scores }) {
+function RecordModal({ scores, playgameagain }) {
   return (
     <div className="RecordModal-modal-box">
-      <h1 className="position-table">Tabla de puntos</h1>
-      {scores.map(item => (
-        <li>{item}</li>
+      <div className="close-icon" onClick={playgameagain}>
+        <FontAwesomeIcon className="icon" icon={faTimes} />
+      </div>
+      <h2 className="position-table">Tabla de puntajes</h2>
+      {scores.map((item, index) => (
+        <ul>{`Intento numero ${index + 1}  :  ${item} ${
+          item === 1 ? "Punto" : "Puntos"
+        } `}</ul>
       ))}
     </div>
   );

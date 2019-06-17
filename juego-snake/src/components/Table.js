@@ -353,6 +353,12 @@ export default class Table extends Component {
     });
     console.log("presiono ver record");
   };
+  onPlayAgainHandled = () => {
+    this.setState({
+      showRecord: false,
+      gameStarted: true
+    });
+  };
 
   render() {
     var filteredTable = initialTable.map(item => (
@@ -381,7 +387,12 @@ export default class Table extends Component {
             showRecord={this.onShowRecordHandler}
           />
         )}
-        {this.state.showRecord && <RecordModal scores={this.state.scores} />}
+        {this.state.showRecord && (
+          <RecordModal
+            scores={this.state.scores}
+            playgameagain={this.onPlayAgainHandled}
+          />
+        )}
       </React.Fragment>
     );
   }

@@ -19,23 +19,25 @@
 }
 
 .square {
-  border-radius: 8px;
-  background-color: beige;
+  border-radius: 6px;
+  background-color: #f0ddaa;
+  /* background-color: #e47c5d; */
   font-size: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #db0017;
+  border: 1px solid #142b3b;
   /* transition: all 0.3s ease-in-out; */
 }
 
 .true {
-  background-color: #189952;
+  background-color: #e47c5d;
+  /* background-color: #e42d40; */
   color: white;
   color: transparent;
 }
 .initial {
-  background-color: #0d297e;
+  background-color: #142b3b;
   color: transparent;
 }
 .food {
